@@ -1,3 +1,12 @@
+---
+title: InferOps Env
+emoji: 🛠️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # InferOps Env
 
 InferOps Env is a real-world OpenEnv-style environment designed for debugging machine learning inference incidents. It evaluates an AI agent's ability to logically investigate, diagnose, and resolve production failures in an inference service.
