@@ -1,0 +1,22 @@
+{
+  "task_id": "hard_timeout_01",
+  "difficulty": "hard",
+  "objective": "Resolve degraded service caused by a timeout regression.",
+  "incident_summary": "Requests are backing up after a recent config deploy.",
+  "true_root_cause": "request_timeout_too_low",
+  "true_fix": "restore_timeout_config",
+  "metrics": {
+    "queue_depth": 250,
+    "gpu_utilization_percent": 15,
+    "latency_p99_ms": 2100,
+    "error_rate_percent": 38
+  },
+  "logs": "INFO: Received inference request. WARN: Task aborted timeout=50ms. ERROR: request_timeout_ms exceeded before execution completed. INFO: Received inference request. WARN: Batch execution did not finish before timeout.",
+  "config": {
+    "request_timeout_ms": 50,
+    "max_batch_size": 32,
+    "dynamic_batching": true
+  },
+  "recent_deploy": "Pushed global configuration change 10 minutes ago. request_timeout_ms was tightened aggressively to 50ms.",
+  "max_steps": 8
+}

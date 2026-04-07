@@ -1,0 +1,20 @@
+{
+  "task_id": "easy_batch_01",
+  "difficulty": "easy",
+  "objective": "Restore normal inference service health.",
+  "incident_summary": "Inference latency spiked after a configuration update.",
+  "true_root_cause": "batch_size_too_high",
+  "true_fix": "reduce_batch_size",
+  "metrics": {
+    "latency_p99_ms": 1200,
+    "queue_depth": 150,
+    "gpu_utilization_percent": 35
+  },
+  "logs": "INFO: Processing request 451...\nWARN: Request queued for 800ms before batching.\nINFO: Batch executed.\nINFO: Processing request 452...\nWARN: Request queued for 820ms before batching.",
+  "config": {
+    "max_batch_size": 128,
+    "batch_timeout_ms": 1000
+  },
+  "recent_deploy": "Updated inference config setting max_batch_size to 128 and batch_timeout_ms to 1000.",
+  "max_steps": 6
+}

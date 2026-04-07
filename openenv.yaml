@@ -1,0 +1,25 @@
+name: inferops-env
+description: A deterministic environment for debugging ML inference incidents.
+version: 0.1.0
+tags:
+  - openenv
+  - ml-inference
+  - debugging
+  - operations
+entrypoint: inferops_env.environment:InferOpsEnv
+tasks:
+  - id: easy_batch_01
+    difficulty: easy
+    description: Inference latency spiked after a configuration update.
+  - id: medium_tokenizer_01
+    difficulty: medium
+    description: Error rate increased after a deployment.
+  - id: medium_partial_tokenizer_regression_01
+    difficulty: medium
+    description: Some requests started failing after a tokenizer-related deployment.
+  - id: hard_timeout_01
+    difficulty: hard
+    description: Requests are backing up after a recent config deploy.
+  - id: hard_misleading_restart_signal_01
+    difficulty: hard
+    description: Requests are timing out under misleading operational signals.

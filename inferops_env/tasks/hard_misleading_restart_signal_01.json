@@ -1,0 +1,22 @@
+{
+  "task_id": "hard_misleading_restart_signal_01",
+  "difficulty": "hard",
+  "objective": "Resolve degraded inference service under misleading operational signals.",
+  "incident_summary": "Requests are timing out and operators suspect a worker restart issue after a config rollout.",
+  "true_root_cause": "request_timeout_too_low",
+  "true_fix": "restore_timeout_config",
+  "metrics": {
+    "queue_depth": 540,
+    "gpu_utilization_percent": 8,
+    "latency_p99_ms": 3500,
+    "error_rate_percent": 62
+  },
+  "logs": "INFO: Handling inference request...\nWARN: Task aborted timeout=20ms.\nERROR: request_timeout_ms exceeded before model execution.\nWARN: Worker 4 heartbeat missed (misleading signal: restart might be needed?).\nINFO: Worker 4 recovered.\nWARN: Task aborted timeout=20ms.",
+  "config": {
+    "request_timeout_ms": 20,
+    "max_batch_size": 64,
+    "worker_count": 8
+  },
+  "recent_deploy": "Pushed global inference configuration. Aggressively tightened request_timeout_ms to 20ms to prevent long-running stalls. Restarted one sluggish worker previously.",
+  "max_steps": 8
+}

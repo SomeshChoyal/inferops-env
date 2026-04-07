@@ -1,0 +1,22 @@
+{
+  "task_id": "medium_partial_tokenizer_regression_01",
+  "difficulty": "medium",
+  "objective": "Restore successful request processing after a partial deployment regression.",
+  "incident_summary": "Some requests started failing after a tokenizer-related deployment.",
+  "true_root_cause": "tokenizer_version_mismatch",
+  "true_fix": "rollback_tokenizer",
+  "metrics": {
+    "error_rate_percent": 35,
+    "latency_p99_ms": 480,
+    "success_rate_percent": 65,
+    "gpu_utilization_percent": 55
+  },
+  "logs": "INFO: Processing inference batch.\nWARN: Subword lookup failed for 3 tokens.\nERROR: Tokenizer version mismatch on request payload. Expected format for model v2.1.0, got unparseable payload from tokenizer v3.0.0-rc1.\nINFO: Processing inference batch.",
+  "config": {
+    "tokenizer_version": "v3.0.0-rc1",
+    "model_version": "v2.1.0",
+    "fallback_enabled": true
+  },
+  "recent_deploy": "Rolled out tokenizer package v3.0.0-rc1 to support new client features. Model version was not updated.",
+  "max_steps": 7
+}

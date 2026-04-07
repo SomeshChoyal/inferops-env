@@ -1,0 +1,22 @@
+{
+  "task_id": "medium_tokenizer_01",
+  "difficulty": "medium",
+  "objective": "Restore successful request processing after a deployment issue.",
+  "incident_summary": "Error rate increased after a deployment.",
+  "true_root_cause": "tokenizer_version_mismatch",
+  "true_fix": "rollback_tokenizer",
+  "metrics": {
+    "error_rate_percent": 85,
+    "latency_p99_ms": 950,
+    "request_count_last_5m": 1200,
+    "gpu_utilization_percent": 41
+  },
+  "logs": "INFO: Decoding input payload. ERROR: Tokenizer version mismatch detected. Expected tokenizer compatible with model v1.0.4, found tokenizer v2.0.1. ERROR: Failed to tokenize request due to unrecognized subword mapping.",
+  "config": {
+    "tokenizer_version": "v2.0.1",
+    "model_version": "v1.0.4",
+    "max_batch_size": 32
+  },
+  "recent_deploy": "Deployed tokenizer package v2.0.1 15 minutes ago. Model version remained unchanged.",
+  "max_steps": 7
+}
