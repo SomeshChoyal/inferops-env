@@ -101,11 +101,14 @@ def main():
 
     print(f"[START] task={obs.task_id} env=inferops model={model_name}")
 
-    _ = client.chat.completions.create(
-        model=model_name,
-        messages=[{"role": "user", "content": "Return exactly: inspect_logs"}],
-        temperature=0.0,
-    )
+    try:
+        _ = client.chat.completions.create(
+            model=model_name,
+            messages=[{"role": "user", "content": "Return exactly: inspect_logs"}],
+            temperature=0.0,
+        )
+    except Exception:
+        pass
 
     done = False
     success = False
@@ -140,15 +143,19 @@ def main():
                     "Return only the next action."
                 )
 
-                response = client.chat.completions.create(
-                    model=model_name,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.0,
-                )
+                try:
+                    response = client.chat.completions.create(
+                        model=model_name,
+                        messages=[{"role": "user", "content": prompt}],
+                        temperature=0.0,
+                    )
 
-                raw_content = response.choices[0].message.content or ""
-                action_str = raw_content.strip().splitlines()[0].strip()
-                action_str = action_str.strip("`").replace("**", "").strip()
+                    raw_content = response.choices[0].message.content or ""
+                    action_str = raw_content.strip().splitlines()[0].strip()
+                    action_str = action_str.strip("`").replace("**", "").strip()
+                except Exception as e:
+                    parse_error = f"llm_call_failed: {str(e).replace(chr(10), ' ')}"
+                    action_str = "inspect_logs"
 
             action_str_clean = action_str.replace("\n", " ")
 
