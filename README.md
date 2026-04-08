@@ -118,12 +118,8 @@ When running the container, the environment is available as a REST API over port
 - `GET /state` — Returns the current episode state.
 - `POST /step` — Submit an action (`{"action": {"action_type": "...", "target": "..."}}`). Returns the result observation.
 
-## Baseline Scores
-
 | Task | Difficulty | Score | Steps | Success |
 |------|-----------|-------|-------|---------|
 | easy_batch_01 | Easy | 0.80 | 4 | true |
-| medium_tokenizer_01 | Medium | 1.00 | 5 | true |
-| medium_partial_tokenizer_regression_01 | Medium | 1.00 | 5 | true |
+| medium_tokenizer_01 | Medium | 0.99 | 5 | true |
 | hard_timeout_01 | Hard | 0.90 | 5 | true |
-| hard_misleading_restart_signal_01 | Hard | 1.00 | 5 | true |
