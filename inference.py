@@ -203,6 +203,7 @@ def run_single_task(task_id: str, client: OpenAI, model_name: str) -> dict:
         env.close()
 
     total_score = sum(rewards)
+    total_score = min (0.99 , max (total_score ,0.01))
     print(
         f"[END] task={task_id} success={str(success).lower()} steps={step_count} "
         f"score={total_score:.2f} rewards={','.join(f'{r:.2f}' for r in rewards)}"
