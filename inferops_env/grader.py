@@ -16,9 +16,7 @@ def get_relevant_sources(task_id: str) -> set[str]:
     mapping = {
         "easy_batch_01": {"config"},
         "medium_tokenizer_01": {"logs", "recent_deploy"},
-        "medium_partial_tokenizer_regression_01": {"logs", "recent_deploy"},
         "hard_timeout_01": {"config"},
-        "hard_misleading_restart_signal_01": {"config", "logs"},
     }
     return mapping.get(task_id, set())
 
