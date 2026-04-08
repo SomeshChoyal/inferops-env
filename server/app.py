@@ -4,8 +4,14 @@ from pydantic import BaseModel, ValidationError
 from inferops_env.environment import InferOpsEnv
 from inferops_env.models import Action
 
+ALLOWED_TASKS = [
+    "easy_batch_01",
+    "medium_tokenizer_01",
+    "hard_timeout_01",
+]
+
 app = FastAPI(title="InferOps Env API")
-env = InferOpsEnv()
+env = InferOpsEnv(task_id=ALLOWED_TASKS[0])
 env.reset()
 
 
@@ -23,7 +29,7 @@ def read_root():
         "name": "InferOps Env",
         "status": env.status,
         "current_task": env.task_id,
-        "available_tasks": sorted(env.tasks.keys()),
+        "available_tasks": ALLOWED_TASKS,
     }
 
 
@@ -34,14 +40,25 @@ def health_check():
 
 @app.get("/tasks")
 def list_tasks():
+    descriptions = {
+        "easy_batch_01": "Inference latency spiked after a configuration update.",
+        "medium_tokenizer_01": "Error rate increased after a deployment.",
+        "hard_timeout_01": "Requests are backing up after a recent config deploy.",
+    }
+    difficulties = {
+        "easy_batch_01": "easy",
+        "medium_tokenizer_01": "medium",
+        "hard_timeout_01": "hard",
+    }
+
     return {
         "tasks": [
             {
-                "id": task.task_id,
-                "difficulty": task.difficulty,
-                "description": task.incident_summary,
+                "id": task_id,
+                "difficulty": difficulties[task_id],
+                "description": descriptions[task_id],
             }
-            for task in sorted(env.tasks.values(), key=lambda t: t.task_id)
+            for task_id in ALLOWED_TASKS
         ]
     }
 
@@ -58,11 +75,10 @@ def reset_env(
         selected_task_id = req.task_id
 
     if selected_task_id is not None:
-        available_tasks = env.tasks.keys()
-        if selected_task_id not in available_tasks:
+        if selected_task_id not in ALLOWED_TASKS:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown task_id '{selected_task_id}'. Available: {sorted(available_tasks)}",
+                detail=f"Unknown task_id '{selected_task_id}'. Available: {ALLOWED_TASKS}",
             )
         env = InferOpsEnv(task_id=selected_task_id)
 
