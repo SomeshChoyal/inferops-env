@@ -64,7 +64,7 @@ def score_step(
 
 
 def clamp_score(score: float) -> float:
-    return max(0.0, min(1.0, score))
+    return max(0.01, min(0.99, score))
 
 
 def finalize_score(
@@ -79,7 +79,11 @@ def finalize_score(
         ):
             return clamp_score(accumulated_score), True, "incident resolved correctly"
 
-        return clamp_score(accumulated_score - 0.20), False, "incident resolved incorrectly"
+        return (
+            clamp_score(accumulated_score - 0.20),
+            False,
+            "incident resolved incorrectly",
+        )
 
     if progress.failed:
         return clamp_score(accumulated_score), False, "episode failed"
