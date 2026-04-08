@@ -40,25 +40,21 @@ The model must output one of the following string payloads:
 - `mark_root_cause:<value>`: Declares the underlying issue.
 - `apply_fix:<value>`: Deploys a mitigation or fix.
 - `resolve_incident`: Finalizes the episode.
-
 ## Tasks
 
-1. **easy_batch_01 (Easy)**
-   - *Incident:* Inference latency spiked after a configuration update.
-   - *Challenge:* Read the config and metrics to spot an aggressively high batch size.
-2. **medium_tokenizer_01 (Medium)**
-   - *Incident:* Error rate increased after a deployment.
-   - *Challenge:* Correlate recent deployment data with logs to find a tokenizer version mismatch.
-3. **medium_partial_tokenizer_regression_01 (Medium)**
-   - *Incident:* Some requests started failing after a tokenizer-related deployment.
-   - *Challenge:* Partial failure with misleading success rates requires cross-referencing logs, config, and deploy data.
-4. **hard_timeout_01 (Hard)**
-   - *Incident:* Requests are backing up after a recent config deploy.
-   - *Challenge:* Identify a hidden timeout regression causing queue pileup while GPU utilization remains low.
-5. **hard_misleading_restart_signal_01 (Hard)**
-   - *Incident:* Requests are timing out and operators suspect a worker restart issue.
-   - *Challenge:* Misleading worker heartbeat signals distract from the real root cause: an aggressively low timeout.
+InferOps Env currently includes **3 deterministic tasks**:
 
+### 1. `easy_batch_01` (Easy)
+- **Incident:** Inference latency spiked after a configuration update.
+- **Challenge:** Read the config and metrics to spot an aggressively high batch size.
+
+### 2. `medium_tokenizer_01` (Medium)
+- **Incident:** Error rate increased after a deployment.
+- **Challenge:** Correlate recent deployment data with logs to find a tokenizer version mismatch.
+
+### 3. `hard_timeout_01` (Hard)
+- **Incident:** Requests are backing up after a recent config deploy.
+- **Challenge:** Identify a timeout regression causing queue buildup while GPU utilization remains low.
 ## Reward and Grading
 
 The environment is deterministic, scoring episodes strictly between `0.0` and `1.0`:
@@ -117,6 +113,9 @@ When running the container, the environment is available as a REST API over port
 - `POST /reset` — Resets the environment. Use `?task_id=<id>` to switch to a specific scenario (e.g. `POST /reset?task_id=hard_timeout_01`).
 - `GET /state` — Returns the current episode state.
 - `POST /step` — Submit an action (`{"action": {"action_type": "...", "target": "..."}}`). Returns the result observation.
+## Baseline Results
+
+Current baseline performance using the shipped deterministic policy:
 
 | Task | Difficulty | Score | Steps | Success |
 |------|-----------|-------|-------|---------|
