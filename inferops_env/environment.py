@@ -5,6 +5,12 @@ from typing import Any
 from .models import Action, Observation, StepResult, TaskDefinition
 from .grader import EpisodeProgress, score_step, finalize_score
 
+ALLOWED_TASKS = {
+    "easy_batch_01",
+    "medium_tokenizer_01",
+    "hard_timeout_01",
+}
+
 
 def strict_score(score: float) -> float:
     return max(0.01, min(0.99, score))
@@ -20,7 +26,6 @@ class InferOpsEnv:
             self.task_id = sorted(self.tasks.keys())[0]
 
         self.current_task = self.tasks[self.task_id]
-
         self.step_count = 0
         self.accumulated_score = 0.01
         self.status = "investigating"
@@ -38,7 +43,11 @@ class InferOpsEnv:
             with json_path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
                 task_def = TaskDefinition(**data)
-                loaded[task_def.task_id] = task_def
+                if task_def.task_id in ALLOWED_TASKS:
+                    loaded[task_def.task_id] = task_def
+
+        if len(loaded) < 3:
+            raise ValueError("At least 3 allowed tasks must be available")
 
         return loaded
 
@@ -78,12 +87,10 @@ class InferOpsEnv:
         self.step_count = 0
         self.last_action_error = None
         self.status = "investigating"
-
         self.progress = EpisodeProgress(
             actions_taken=[],
             discovered_sources=set(),
         )
-
         return self._build_observation()
 
     def state(self) -> dict[str, Any]:
@@ -118,7 +125,6 @@ class InferOpsEnv:
             action_str = action.action_type.value
 
         action_type_val = action.action_type.value
-
         is_inspect = action_type_val.startswith("inspect_")
         is_repeat = False
 
@@ -128,13 +134,10 @@ class InferOpsEnv:
                 is_repeat = True
             else:
                 self.progress.discovered_sources.add(source)
-
         elif action_type_val == "mark_root_cause":
             self.progress.marked_root_cause = action.target
-
         elif action_type_val == "apply_fix":
             self.progress.applied_fix = action.target
-
         elif action_type_val == "resolve_incident":
             self.progress.resolved = True
             self.status = "resolved"
