@@ -88,18 +88,24 @@ def parse_action(action_str: str) -> Action:
 def main():
     api_base_url = os.environ.get("API_BASE_URL", "https://api.openai.com/v1")
     model_name = os.environ.get("MODEL_NAME", "gpt-4.1-mini")
-    hf_token = os.environ.get("HF_TOKEN")
+    api_key = os.environ.get("API_KEY") or os.environ.get("HF_TOKEN")
 
-    if not hf_token:
-        raise ValueError("HF_TOKEN environment variable is required")
+    if not api_key:
+        raise ValueError("API_KEY environment variable is required")
 
-    client = OpenAI(base_url=api_base_url, api_key=hf_token)
+    client = OpenAI(base_url=api_base_url, api_key=api_key)
     task_id_env = os.environ.get("TASK_ID")
     env = InferOpsEnv(task_id=task_id_env)
 
     obs = env.reset()
 
     print(f"[START] task={obs.task_id} env=inferops model={model_name}")
+
+    _ = client.chat.completions.create(
+        model=model_name,
+        messages=[{"role": "user", "content": "Return exactly: inspect_logs"}],
+        temperature=0.0,
+    )
 
     done = False
     success = False
