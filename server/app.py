@@ -13,6 +13,10 @@ class StepRequest(BaseModel):
     action: dict
 
 
+class ResetRequest(BaseModel):
+    task_id: str | None = None
+
+
 @app.get("/")
 def read_root():
     return {
@@ -30,19 +34,37 @@ def health_check():
 
 @app.get("/tasks")
 def list_tasks():
-    return {"tasks": sorted(env.tasks.keys())}
+    return {
+        "tasks": [
+            {
+                "id": task.task_id,
+                "difficulty": task.difficulty,
+                "description": task.incident_summary,
+            }
+            for task in sorted(env.tasks.values(), key=lambda t: t.task_id)
+        ]
+    }
 
 
 @app.post("/reset")
-def reset_env(task_id: str | None = Query(default=None)):
+def reset_env(
+    req: ResetRequest | None = None,
+    task_id: str | None = Query(default=None),
+):
     global env
-    if task_id is not None:
-        if task_id not in env.tasks:
+
+    selected_task_id = task_id
+    if req is not None and req.task_id is not None:
+        selected_task_id = req.task_id
+
+    if selected_task_id is not None:
+        if selected_task_id not in env.tasks:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown task_id '{task_id}'. Available: {sorted(env.tasks.keys())}",
+                detail=f"Unknown task_id '{selected_task_id}'. Available: {sorted(env.tasks.keys())}",
             )
-        env = InferOpsEnv(task_id=task_id)
+        env = InferOpsEnv(task_id=selected_task_id)
+
     obs = env.reset()
     return obs.model_dump()
 
@@ -67,9 +89,11 @@ def step_env(req: StepRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Runtime error: {str(e)}")
 
+
 def main():
     import uvicorn
     uvicorn.run("server.app:app", host="0.0.0.0", port=7860)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
