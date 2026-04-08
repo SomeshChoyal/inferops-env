@@ -14,12 +14,6 @@ tasks:
   - id: medium_tokenizer_01
     difficulty: medium
     description: Error rate increased after a deployment.
-  - id: medium_partial_tokenizer_regression_01
-    difficulty: medium
-    description: Some requests started failing after a tokenizer-related deployment.
   - id: hard_timeout_01
     difficulty: hard
     description: Requests are backing up after a recent config deploy.
-  - id: hard_misleading_restart_signal_01
-    difficulty: hard
-    description: Requests are timing out under misleading operational signals.
