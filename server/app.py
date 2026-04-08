@@ -40,27 +40,7 @@ def health_check():
 
 @app.get("/tasks")
 def list_tasks():
-    descriptions = {
-        "easy_batch_01": "Inference latency spiked after a configuration update.",
-        "medium_tokenizer_01": "Error rate increased after a deployment.",
-        "hard_timeout_01": "Requests are backing up after a recent config deploy.",
-    }
-    difficulties = {
-        "easy_batch_01": "easy",
-        "medium_tokenizer_01": "medium",
-        "hard_timeout_01": "hard",
-    }
-
-    return {
-        "tasks": [
-            {
-                "id": task_id,
-                "difficulty": difficulties[task_id],
-                "description": descriptions[task_id],
-            }
-            for task_id in ALLOWED_TASKS
-        ]
-    }
+    return {"tasks": ALLOWED_TASKS}
 
 
 @app.post("/reset")
