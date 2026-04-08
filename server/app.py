@@ -58,10 +58,11 @@ def reset_env(
         selected_task_id = req.task_id
 
     if selected_task_id is not None:
-        if selected_task_id not in env.tasks:
+        available_tasks = env.tasks.keys()
+        if selected_task_id not in available_tasks:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown task_id '{selected_task_id}'. Available: {sorted(env.tasks.keys())}",
+                detail=f"Unknown task_id '{selected_task_id}'. Available: {sorted(available_tasks)}",
             )
         env = InferOpsEnv(task_id=selected_task_id)
 
